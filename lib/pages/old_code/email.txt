@@ -1,0 +1,236 @@
+import 'package:artisan_shop/emailPages/email_components/my_button.dart';
+import 'package:artisan_shop/emailPages/email_components/my_textfield.dart';
+import 'package:artisan_shop/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+class EmailLogin extends StatefulWidget {
+  void Function()? onTap;
+  EmailLogin({super.key, required this.onTap});
+
+  @override
+  State<EmailLogin> createState() => _EmailLoginState();
+}
+
+class _EmailLoginState extends State<EmailLogin> {
+  // text editing controllers
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  // sign user in method
+  void signUserIn(BuildContext context) async {
+    // Show loading circle
+    final currentContext = context; // Capture the current context
+    showDialog(
+      context: currentContext,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    // Try sign in method
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      // Pop the loading circle
+      Navigator.pop(currentContext);
+
+      // Navigate to HomePage
+      Navigator.pushReplacement(
+        currentContext,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    } on FirebaseAuthException catch (e) {
+      // Pop the loading circle
+      Navigator.pop(currentContext);
+
+      // Handle error cases
+      if (e.code == 'user-not-found') {
+        // Show error to user
+        wrongEmailMessage(currentContext);
+      } else if (e.code == 'wrong-password') {
+        // Show error to user
+        wrongPasswordMessage(currentContext);
+      }
+    }
+  }
+
+  // Wrong email message pop-up
+  void wrongEmailMessage(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Incorrect Email'),
+          content: Text('No user found with that email.'),
+        );
+      },
+    );
+  }
+
+  // Wrong password message pop-up
+  void wrongPasswordMessage(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Incorrect Password'),
+          content: Text('The password you entered is incorrect.'),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[300],
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            // Use SingleChildScrollView to prevent overflow
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 50),
+
+                // Logo
+                const Icon(
+                  Icons.lock,
+                  size: 100,
+                ),
+
+                const SizedBox(height: 50),
+
+                // Welcome back, you've been missed!
+                Text(
+                  'Welcome To Art',
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 16,
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                // Username textfield
+                MyTextField(
+                  controller: emailController,
+                  hintText: 'Email',
+                  obscureText: false,
+                ),
+
+                const SizedBox(height: 10),
+
+                // Password textfield
+                MyTextField(
+                  controller: passwordController,
+                  hintText: 'Password',
+                  obscureText: true, // Hide password
+                ),
+
+                const SizedBox(height: 10),
+
+                // Forgot password?
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Forgot Password?',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                // Sign in button
+                MyButton(
+                  onTap: () => signUserIn(context),
+                ),
+
+                const SizedBox(height: 50),
+
+                // Uncomment the following code if you want to add "or continue with" and other options
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                //   child: Row(
+                //     children: [
+                //       Expanded(
+                //         child: Divider(
+                //           thickness: 0.5,
+                //           color: Colors.grey[400],
+                //         ),
+                //       ),
+                //       Padding(
+                //         padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                //         child: Text(
+                //           'Or continue with',
+                //           style: TextStyle(color: Colors.grey[700]),
+                //         ),
+                //       ),
+                //       Expanded(
+                //         child: Divider(
+                //           thickness: 0.5,
+                //           color: Colors.grey[400],
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+
+                // const SizedBox(height: 50),
+
+                // // Google + Apple sign in buttons
+                // const Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     // Google button
+                //     SquareTile(imagePath: 'images/google.png'),
+
+                //     SizedBox(width: 25),
+
+                //     // Apple button
+                //     SquareTile(imagePath: 'images/apple.png')
+                //   ],
+                // ),
+
+                const SizedBox(height: 50),
+
+                // Not a member? Register now
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Not a member?',
+                      style: TextStyle(color: Colors.grey[700]),
+                    ),
+                    const SizedBox(width: 4),
+                    GestureDetector(
+                      onTap: widget.onTap,
+                      child: const Text(
+                        'Register now',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

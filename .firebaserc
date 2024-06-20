@@ -1,0 +1,10 @@
+{
+  "projects": {
+    "dbart": "dbshop3-c5972",
+    "roddy": "dbshop3-c5972",
+    "default": "dbshop3-c5972"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
+}

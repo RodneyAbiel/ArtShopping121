@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "839442383684",
+    "project_id": "dbshop3-c5972",
+    "storage_bucket": "dbshop3-c5972.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:839442383684:android:18366d5aa5506abc69cd11",
+        "android_client_info": {
+          "package_name": "com.dbshop3.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4osNCn7qNxvrxiH7M8XTuXSz_GVnxWIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
